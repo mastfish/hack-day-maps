@@ -21,7 +21,7 @@ public class MainActivity extends ActionBarActivity {
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new WebViewClient());
-        mWebView.loadUrl("http://localhost:3000/sydney/stores");
+        mWebView.loadUrl("http://10.80.32.70:3000/sydney/stores");
     }
 
 
