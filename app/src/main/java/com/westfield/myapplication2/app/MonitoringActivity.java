@@ -55,8 +55,8 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
                         @Override
                         public void run() {
                             Log.i(TAG, "RAN");
-//                            mWebView = (WebView) findViewById(R.id.activity_main_webview);
-                            mWebView.loadUrl("http://10.80.32.224:3000/sydney/stores?minor=" + minor);
+                            String scriptSrc = "$('.stores-list__inner').html(\"" + minor + "\") " ;
+                            mWebView.loadUrl("javascript:" + scriptSrc);
                         }
                     });
                 }
