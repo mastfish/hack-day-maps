@@ -8,10 +8,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.radiusnetworks.ibeacon.IBeacon;
 import com.radiusnetworks.ibeacon.IBeaconConsumer;
 import com.radiusnetworks.ibeacon.IBeaconManager;
-import com.radiusnetworks.ibeacon.MonitorNotifier;
+import com.radiusnetworks.ibeacon.RangeNotifier;
 import com.radiusnetworks.ibeacon.Region;
+
+import java.util.Collection;
 
 /**
  * Created by mastfish on 23/05/2014.
@@ -21,6 +24,8 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
     private IBeaconManager iBeaconManager = IBeaconManager.getInstanceForApplication(this);
 
     private WebView mWebView;
+
+    public String minor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,25 +46,25 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
     }
     @Override
     public void onIBeaconServiceConnect() {
-        iBeaconManager.setMonitorNotifier(new MonitorNotifier() {
+        iBeaconManager.setRangeNotifier(new RangeNotifier() {
             @Override
-            public void didEnterRegion(Region region) {
-                Log.i(TAG, "I just saw an iBeacon for the firt time!");
-            }
-
-            @Override
-            public void didExitRegion(Region region) {
-                Log.i(TAG, "I no longer see an iBeacon");
-            }
-
-            @Override
-            public void didDetermineStateForRegion(int state, Region region) {
-                Log.i(TAG, "I have just switched from seeing/not seeing iBeacons: "+state);
+            public void didRangeBeaconsInRegion(Collection<IBeacon> iBeacons, Region region) {
+                if (iBeacons.size() > 0) {
+                    minor = "" + iBeacons.iterator().next().getMinor();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "RAN");
+//                            mWebView = (WebView) findViewById(R.id.activity_main_webview);
+                            mWebView.loadUrl("http://10.80.32.224:3000/sydney/stores?minor=" + minor);
+                        }
+                    });
+                }
             }
         });
 
         try {
-            iBeaconManager.startMonitoringBeaconsInRegion(new Region("myMonitoringUniqueId", null, null, null));
+            iBeaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
         } catch (RemoteException e) {   }
     }
 
