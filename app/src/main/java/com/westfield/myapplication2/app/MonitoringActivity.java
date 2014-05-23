@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.radiusnetworks.ibeacon.IBeaconConsumer;
 import com.radiusnetworks.ibeacon.IBeaconManager;
@@ -17,11 +20,19 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
     protected static final String TAG = "RangingActivity";
     private IBeaconManager iBeaconManager = IBeaconManager.getInstanceForApplication(this);
 
+    private WebView mWebView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ranging);
+//        setContentView(R.layout.activity_ranging);
         iBeaconManager.bind(this);
+        setContentView(R.layout.activity_main);
+        mWebView = (WebView) findViewById(R.id.activity_main_webview);
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        mWebView.setWebViewClient(new WebViewClient());
+        mWebView.loadUrl("http://10.80.32.224:3000/sydney/stores");
     }
     @Override
     protected void onDestroy() {
