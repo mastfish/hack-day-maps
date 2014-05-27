@@ -50,11 +50,21 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
             @Override
             public void didRangeBeaconsInRegion(Collection<IBeacon> iBeacons, Region region) {
                 if (iBeacons.size() > 0) {
-                    minor = "" + iBeacons.iterator().next().getMinor();
+                    IBeacon smallest = null;
+                    for (IBeacon iBeacon : iBeacons) {
+                        if (smallest == null) {
+                            smallest = iBeacon;
+                        }else {
+                            if (smallest.getAccuracy() > iBeacon.getAccuracy()){
+                                smallest = iBeacon;
+                            }
+                        }
+                        Log.i(TAG,"Saw:" + iBeacon.getMinor() + "|" + iBeacon.getAccuracy());
+                    }
+                    minor = "" + smallest.getMinor();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.i(TAG, "RAN");
                             String scriptSrc = "$('.stores-list__inner').html(\"" + minor + "\") " ;
                             mWebView.loadUrl("javascript:" + scriptSrc);
                         }
