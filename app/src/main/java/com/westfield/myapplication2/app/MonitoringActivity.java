@@ -65,7 +65,7 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            String scriptSrc = "$('.stores-list__inner').html(\"" + minor + "\") " ;
+                            String scriptSrc = " window.hack = " + minor ;
                             mWebView.loadUrl("javascript:" + scriptSrc);
                         }
                     });
