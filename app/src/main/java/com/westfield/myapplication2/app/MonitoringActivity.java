@@ -3,7 +3,8 @@ package com.westfield.myapplication2.app;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.util.Log;
+import android.webkit.GeolocationPermissions;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -29,6 +30,8 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_ranging);
         iBeaconManager.bind(this);
@@ -36,7 +39,16 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
         mWebView = (WebView) findViewById(R.id.activity_main_webview);
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setDatabaseEnabled(true);
+        webSettings.setGeolocationEnabled(true);
         mWebView.setWebViewClient(new WebViewClient());
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                callback.invoke(origin, true, false);
+            }
+        });
+//        mWebView.loadUrl("http://html5test.com/");
         mWebView.loadUrl("http://10.80.32.224:3000/sydney/stores");
     }
     @Override
@@ -59,7 +71,7 @@ public class MonitoringActivity extends Activity implements IBeaconConsumer {
                                 smallest = iBeacon;
                             }
                         }
-                        Log.i(TAG,"Saw:" + iBeacon.getMinor() + "|" + iBeacon.getAccuracy());
+//                        Log.i(TAG,"Saw:" + iBeacon.getMinor() + "|" + iBeacon.getAccuracy());
                     }
                     minor = "" + smallest.getMinor();
                     runOnUiThread(new Runnable() {
